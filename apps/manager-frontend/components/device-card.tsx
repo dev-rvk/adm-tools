@@ -12,7 +12,7 @@ import { DeviceProps } from "@/app/page";
 import { useRouter } from "next/navigation";
 
 
-export function DeviceCard({
+export default function DeviceCard({
     transport_id,
     serial,
     product,
@@ -65,55 +65,57 @@ export function DeviceCard({
     };
 
     return (
-        <Card className="w-[350px] flex flex-col justify-between">
-            <CardHeader className="pb-2">
-                <div className="flex justify-center mb-4">
-                    <Smartphone className="h-16 w-16 text-primary" />
-                </div>
-                <CardTitle className="text-center text-2xl font-bold">
-                    {model}
-                </CardTitle>
-            </CardHeader>
-            <CardContent>
-                <div className="grid grid-cols-2 gap-2 mb-4">
-                    <div className="text-sm font-medium text-muted-foreground">
-                        Product
+        <>
+            <Card className="w-[350px] flex flex-col justify-between">
+                <CardHeader className="pb-2">
+                    <div className="flex justify-center mb-4">
+                        <Smartphone className="h-16 w-16 text-primary" />
                     </div>
-                    <div className="text-sm text-right">{product}</div>
-                    <div className="text-sm font-medium text-muted-foreground">
-                        Serial
+                    <CardTitle className="text-center text-2xl font-bold">
+                        {model}
+                    </CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="grid grid-cols-2 gap-2 mb-4">
+                        <div className="text-sm font-medium text-muted-foreground">
+                            Product
+                        </div>
+                        <div className="text-sm text-right">{product}</div>
+                        <div className="text-sm font-medium text-muted-foreground">
+                            Serial
+                        </div>
+                        <div className="text-sm text-right">{serial}</div>
+                        <div className="text-sm font-medium text-muted-foreground">
+                            Type
+                        </div>
+                        <div className="text-sm text-right">{type}</div>
+                        <div className="text-sm font-medium text-muted-foreground">
+                            IP Address
+                        </div>
+                        <div className="text-sm text-right">{ip_address || 'N/A'}</div>
+                        <div className="text-sm font-medium text-muted-foreground">
+                            Port
+                        </div>
+                        <div className="text-sm text-right">{port || 'N/A'}</div>
+                        {(type === 'emulator' || type === 'WIFI') && (
+                            <>
+                                <div className="text-sm font-medium text-muted-foreground">
+                                    WS URL
+                                </div>
+                                <div className="text-sm text-right">{deviceWsUrl || 'N/A'}</div>
+                            </>
+                        )}
                     </div>
-                    <div className="text-sm text-right">{serial}</div>
-                    <div className="text-sm font-medium text-muted-foreground">
-                        Type
-                    </div>
-                    <div className="text-sm text-right">{type}</div>
-                    <div className="text-sm font-medium text-muted-foreground">
-                        IP Address
-                    </div>
-                    <div className="text-sm text-right">{ip_address || 'N/A'}</div>
-                    <div className="text-sm font-medium text-muted-foreground">
-                        Port
-                    </div>
-                    <div className="text-sm text-right">{port || 'N/A'}</div>
-                    {(type === 'emulator' || type === 'WIFI') && (
-                        <>
-                            <div className="text-sm font-medium text-muted-foreground">
-                                WS URL
-                            </div>
-                            <div className="text-sm text-right">{deviceWsUrl || 'N/A'}</div>
-                        </>
-                    )}
-                </div>
-            </CardContent>
-            <CardFooter className="flex justify-end">
-                <Button
-                    disabled={status === 'busy' || isLoading}
-                    onClick={handleConnect}
-                >
-                    {isLoading ? "Connecting..." : "Connect"}
-                </Button>
-            </CardFooter>
-        </Card>
+                </CardContent>
+                <CardFooter className="flex justify-end">
+                    <Button
+                        disabled={status === 'busy' || isLoading}
+                        onClick={handleConnect}
+                    >
+                        {isLoading ? "Connecting..." : "Connect"}
+                    </Button>
+                </CardFooter>
+            </Card>
+        </>
     );
 }
