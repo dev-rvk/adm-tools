@@ -1,5 +1,5 @@
 {
-  "name": "adm-tools-1",
+  "name": "adm-tools",
   "private": true,
   "scripts": {
     "build": "turbo build",
