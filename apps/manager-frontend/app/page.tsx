@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Loader2, RefreshCw } from "lucide-react";
-import { DeviceCard } from "@/components/device-card";
+import  DeviceCard from "@/components/device-card";
 import {config} from "config";
 
 
@@ -73,19 +73,11 @@ export default function DeviceManagement() {
 
             {loading && <Loader2 className="mx-auto h-8 w-8 animate-spin" />}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mx-auto">
                 {devices.map((device) => (
                     <DeviceCard
                         key={device.serial}
-                        transport_id={device.transport_id}
-                        serial={device.serial}
-                        product={device.product}
-                        model={device.model}
-                        type={device.type}
-                        port={device.port}
-                        ip_address={device.ip_address}
-                        wsUrl={device.wsUrl}
-                        status={device.status}
+                        {...device}
                         refreshButtonRef={refreshButtonRef}
                     />
                 ))}

@@ -11,6 +11,10 @@ import { useState } from "react";
 import { DeviceProps } from "@/app/page";
 import { useRouter } from "next/navigation";
 
+// Add this helper function before the DeviceCard component
+const formatModelName = (model: string) => {
+    return model.replace(/_/g, ' ');
+};
 
 export default function DeviceCard({
     transport_id,
@@ -53,6 +57,7 @@ export default function DeviceCard({
         const params = new URLSearchParams({
             type: type,
             wsUrl: deviceWsUrl || '',
+            serial: serial,
         });
         window.open(`${baseUrl}?${params.toString()}`, '_blank');
 
@@ -66,13 +71,13 @@ export default function DeviceCard({
 
     return (
         <>
-            <Card className="w-[350px] flex flex-col justify-between">
+            <Card className="w-full max-w-[350px] flex flex-col justify-between">
                 <CardHeader className="pb-2">
                     <div className="flex justify-center mb-4">
                         <Smartphone className="h-16 w-16 text-primary" />
                     </div>
                     <CardTitle className="text-center text-2xl font-bold">
-                        {model}
+                        {formatModelName(model)}
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -107,9 +112,21 @@ export default function DeviceCard({
                         )}
                     </div>
                 </CardContent>
-                <CardFooter className="flex justify-end">
+                <CardFooter className="flex justify-end gap-2">
+                    {(type === 'emulator' || type === 'WIFI') && (
+                        <Button
+                            disabled={isLoading || deviceWsUrl !== null}
+                            onClick={handleStartServer}
+                        >
+                            {isLoading ? "Starting..." : "Start Server"}
+                        </Button>
+                    )}
                     <Button
-                        disabled={status === 'busy' || isLoading}
+                        disabled={
+                            status === 'busy' || 
+                            isLoading || 
+                            ((type === 'emulator' || type === 'WIFI') && !deviceWsUrl)
+                        }
                         onClick={handleConnect}
                     >
                         {isLoading ? "Connecting..." : "Connect"}

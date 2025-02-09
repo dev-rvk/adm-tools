@@ -118,7 +118,7 @@ app.get('/list', async (req, res) => {
                     ip_address: 'NA',
                     wsUrl: wsServer?.wsUrl || null
                 };
-                deviceRegistry.set(device.transportId.toString(), deviceInfo);
+                deviceRegistry.set(device.serial, deviceInfo);
                 return deviceInfo;
             }
 
@@ -132,7 +132,7 @@ app.get('/list', async (req, res) => {
                     ip_address: wifiMatch[1],
                     wsUrl: wsServer?.wsUrl || null
                 };
-                deviceRegistry.set(device.transportId.toString(), deviceInfo);
+                deviceRegistry.set(device.serial, deviceInfo);
                 return deviceInfo;
             }
 
