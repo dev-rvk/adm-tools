@@ -449,6 +449,32 @@ app.post('/disconnected', async (req, res): Promise<any> => {
     res.json({ status: 'success', message: 'Device marked as available' });
 });
 
+app.post('/reset', async (req, res): Promise<any> => {
+    const { serial } = req.body;
+
+    if (!serial) {
+        return res.status(400).json({ error: 'Device serial is required' });
+    }
+
+    const device = deviceRegistry.get(serial);
+    if (!device) {
+        return res.status(404).json({ error: 'Device not found' });
+    }
+
+    // Reset device status
+    device.status = 'available';
+    // Remove from client map
+    deviceClientMap.delete(serial);
+    // Remove from websockify servers if exists
+    if (activeWebsockifyServers.has(serial)) {
+        activeWebsockifyServers.delete(serial);
+    }
+
+    console.log('Device Reset:', device.serial);
+
+    res.json({ status: 'success', message: 'Device reset successfully' });
+});
+
 server.listen(port, () => {
     console.log(`Server listening at http://localhost:${port}`);
 });

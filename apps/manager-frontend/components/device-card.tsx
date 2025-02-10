@@ -6,7 +6,7 @@ import {
     CardFooter,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Smartphone } from "lucide-react";
+import { Smartphone, RefreshCw } from "lucide-react";
 import { useState } from "react";
 import { DeviceProps } from "@/app/page";
 import { useRouter } from "next/navigation";
@@ -70,6 +70,31 @@ export default function DeviceCard({
         }, 1000);
     };
 
+    const handleReset = async () => {
+        setIsLoading(true);
+        try {
+            const response = await fetch('http://localhost:3003/reset', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ serial }),
+            });
+            
+            if (response.ok) {
+                setDeviceWsUrl(null);
+                // Refresh the device list
+                if (refreshButtonRef?.current) {
+                    refreshButtonRef.current.click();
+                }
+            }
+        } catch (error) {
+            console.error('Error resetting device:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     return (
         <>
             <Card className="w-full max-w-[350px] flex flex-col justify-between">
@@ -113,25 +138,39 @@ export default function DeviceCard({
                         )}
                     </div>
                 </CardContent>
-                <CardFooter className="flex justify-end gap-2">
-                    {(type === 'emulator' || type === 'WIFI') && (
+                <CardFooter className="flex justify-between gap-2">
+                    {type === 'USB' && status === 'busy' && (
                         <Button
-                            disabled={isLoading || deviceWsUrl !== null}
-                            onClick={handleStartServer}
+                            variant="outline"
+                            size="icon"
+                            onClick={handleReset}
+                            disabled={isLoading}
+                            title="Reset device"
                         >
-                            {isLoading ? "Starting..." : "Start Server"}
+                            <RefreshCw className="h-4 w-4" />
                         </Button>
                     )}
-                    <Button
-                        disabled={
-                            status === 'busy' || 
-                            isLoading || 
-                            ((type === 'emulator' || type === 'WIFI') && !deviceWsUrl)
-                        }
-                        onClick={handleConnect}
-                    >
-                        {isLoading ? "Connecting..." : "Connect"}
-                    </Button>
+                    {type !== 'USB' && <div />} {/* Spacer for consistent layout */}
+                    <div className="flex gap-2">
+                        {(type === 'emulator' || type === 'WIFI') && (
+                            <Button
+                                disabled={isLoading || deviceWsUrl !== null}
+                                onClick={handleStartServer}
+                            >
+                                {isLoading ? "Starting..." : "Start Server"}
+                            </Button>
+                        )}
+                        <Button
+                            disabled={
+                                status === 'busy' || 
+                                isLoading || 
+                                ((type === 'emulator' || type === 'WIFI') && !deviceWsUrl)
+                            }
+                            onClick={handleConnect}
+                        >
+                            {isLoading ? "Connecting..." : "Connect"}
+                        </Button>
+                    </div>
                 </CardFooter>
             </Card>
         </>
