@@ -59,6 +59,7 @@ export default function DeviceCard({
             wsUrl: deviceWsUrl || '',
             serial: serial,
         });
+        console.log('Opening new window with URL:', `${baseUrl}?${params.toString()}`);
         window.open(`${baseUrl}?${params.toString()}`, '_blank');
 
         // Simulate clicking the refresh button

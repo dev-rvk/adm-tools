@@ -260,12 +260,35 @@ app.post('/connect', async (req, res) : Promise<any>=> {
 // Device Client Map
 const deviceClientMap = new Map<string, Set<string>>();
 
+server.on('upgrade', async (req, socket, head) => {
+    console.log('Upgrade request received for URL:', req.url);
+    const match = req.url?.match(/\/device\/(\d+)/);
+
+    if (match) {
+        const transportId = BigInt(match[1]);
+        console.log(`Parsed transport ID: ${transportId}`);
+
+        wss.handleUpgrade(req, socket, head, async (ws) => {
+            wss.emit('connection', ws, req);
+            console.log('Upgrade successful, establishing WebSocket connection');
+            await handleDeviceWebSocket(ws, transportId, req);
+        });
+
+    } else {
+        console.log('No matching route for URL:', req.url);
+        socket.destroy();
+    }
+});
 
 async function handleDeviceWebSocket(ws: import("ws"), transportId: bigint, req: import("http").IncomingMessage) {
-    
     console.log('handling connection....');
     const deviceId = transportId.toString();
     try {
+        const url = new URL(req.url!, `http://${req.headers.host}`);
+        const clientId = url.searchParams.get('clientId');
+        if (!clientId) {
+            throw new Error("Client ID is required");
+        }
 
         const device = (await client.getDevices()).find(d => d.transportId === transportId);
         if (!device) throw new Error("Device not found");
@@ -287,12 +310,6 @@ async function handleDeviceWebSocket(ws: import("ws"), transportId: bigint, req:
         };
         deviceRegistry.set(serial, updatedDevice);
 
-        const url = new URL(req.url!, `http://${req.headers.host}`);
-        const clientId = url.searchParams.get('clientId');
-        if (!clientId) {
-            throw new Error("Client ID is required");
-        }
-
         // Update deviceClientMap with serial
         let clientSet = deviceClientMap.get(serial);
         if (!clientSet) {
@@ -303,8 +320,6 @@ async function handleDeviceWebSocket(ws: import("ws"), transportId: bigint, req:
 
         console.log('Device registry updated:', updatedDevice.serial, updatedDevice.status);
         console.log('Connected to ClientID:', clientId);
-
-        
 
         const transport = await client.createTransport(device);
         const service = decodeURIComponent(url.searchParams.get('service') || '');
@@ -391,28 +406,47 @@ async function handleDeviceWebSocket(ws: import("ws"), transportId: bigint, req:
     }
 }
 
-server.on('upgrade', async (req, socket, head) => {
-    console.log('Upgrade request received for URL:', req.url);
-    const match = req.url?.match(/\/device\/(\d+)/);
-
-    if (match) {
-        const transportId = BigInt(match[1]);
-        console.log(`Parsed transport ID: ${transportId}`);
-
-        wss.handleUpgrade(req, socket, head, async (ws) => {
-            wss.emit('connection', ws, req);
-            console.log('Upgrade successful, establishing WebSocket connection');
-            await handleDeviceWebSocket(ws, transportId, req);
-        });
-
-    } else {
-        console.log('No matching route for URL:', req.url);
-        socket.destroy();
-    }
-});
-
 app.get('/test', (req, res) => {
     res.send('Server is running on port 3000');
+});
+
+app.post('/connected', async (req, res): Promise<any> => {
+    const { clientId, serial } = req.body;
+
+    if (!clientId || !serial) {
+        return res.status(400).json({ error: 'Client ID and device serial are required' });
+    }
+
+    const device = deviceRegistry.get(serial);
+    if (!device) {
+        return res.status(404).json({ error: 'Device not found' });
+    }
+
+    device.status = 'busy';
+    deviceClientMap.set(serial, new Set([clientId]));
+    console.log('Device Connected:', device.serial, '/n Client ID:', clientId);
+
+
+    res.json({ status: 'success', message: 'Device marked as busy' });
+});
+
+app.post('/disconnected', async (req, res): Promise<any> => {
+    const { clientId, serial } = req.body;
+
+    if (!clientId || !serial) {
+        return res.status(400).json({ error: 'Client ID and device serial are required' });
+    }
+
+    const device = deviceRegistry.get(serial);
+    if (!device) {
+        return res.status(404).json({ error: 'Device not found' });
+    }
+
+    device.status = 'available';
+    deviceClientMap.delete(serial);
+    console.log('Device Disconnected:', device.serial);
+
+    res.json({ status: 'success', message: 'Device marked as available' });
 });
 
 server.listen(port, () => {
