@@ -10,7 +10,11 @@ import { Smartphone, RefreshCw } from "lucide-react";
 import { useState } from "react";
 import { DeviceProps } from "@/app/page";
 import { useRouter } from "next/navigation";
+import {config} from "config";
 
+
+
+const PORT = config.TANGO_BACKEND_MANAGER_PORT;
 // Add this helper function before the DeviceCard component
 const formatModelName = (model: string) => {
     return model.replace(/_/g, ' ');
@@ -35,7 +39,7 @@ export default function DeviceCard({
     const handleStartServer = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch('http://localhost:3003/connect', {
+            const response = await fetch(`http://localhost:${PORT}/connect`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -73,7 +77,7 @@ export default function DeviceCard({
     const handleReset = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch('http://localhost:3003/reset', {
+            const response = await fetch(`http://localhost:${PORT}/reset`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
