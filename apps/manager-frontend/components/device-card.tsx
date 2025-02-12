@@ -82,7 +82,7 @@ export default function DeviceCard({
             });
             
             if (response.ok) {
-                setDeviceWsUrl(null);
+                // setDeviceWsUrl(null);
                 // Refresh the device list
                 if (refreshButtonRef?.current) {
                     refreshButtonRef.current.click();
@@ -139,7 +139,7 @@ export default function DeviceCard({
                     </div>
                 </CardContent>
                 <CardFooter className="flex justify-between gap-2">
-                    {type === 'USB' && status === 'busy' && (
+                    {status === 'busy' && (
                         <Button
                             variant="outline"
                             size="icon"
@@ -150,7 +150,7 @@ export default function DeviceCard({
                             <RefreshCw className="h-4 w-4" />
                         </Button>
                     )}
-                    {type !== 'USB' && <div />} {/* Spacer for consistent layout */}
+                    
                     <div className="flex gap-2">
                         {(type === 'emulator' || type === 'WIFI') && (
                             <Button

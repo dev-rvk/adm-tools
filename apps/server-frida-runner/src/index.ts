@@ -26,14 +26,34 @@ if (!fs.existsSync(TEMP_DIR)) {
 
 app.post('/start-server', async (req: Request, res: Response): Promise<any> => {
   try {
+    const { serial } = req.body; // Add this line to get serial from request
+    if (!serial) {
+      return res.status(400).json({ error: 'Device serial is required' });
+    }
+
+    // Check device architecture
+    const archProcess = spawn('adb', ['-s', serial, 'shell', 'getprop', 'ro.product.cpu.abi']);
+    const architecture = await new Promise<string>((resolve) => {
+      let arch = '';
+      archProcess.stdout.on('data', (data) => {
+        arch = data.toString().trim();
+      });
+      archProcess.on('close', () => {
+        resolve(arch);
+      });
+    });
+
+    // Determine correct Frida server binary
+    const fridaServerBinary = architecture === 'armeabi-v7a' ? 'frida-server-arm' : 'frida-server-arm64';
+    
     // First check if Frida server is already running
-    const checkProcess = spawn('adb', ['shell', 'netstat -anp | grep 27042']);
+    const checkProcess = spawn('adb', ['-s', serial, 'shell', 'netstat -anp | grep 27042']);
     
     let isRunning = false;
     
     checkProcess.stdout.on('data', (data) => {
       const output = data.toString();
-      if (output.includes('frida-server-arm64')) {
+      if (output.includes(fridaServerBinary )) {
         isRunning = true;
       }
     });
@@ -48,10 +68,13 @@ app.post('/start-server', async (req: Request, res: Response): Promise<any> => {
       return res.json({ status: 'success', message: 'Frida server is already running' });
     }
 
+    
+
+    
     // If server is not running, proceed with the original startup sequence
     // Step 1: Restart ADB as root
     await new Promise<void>((resolve, reject) => {
-      const rootProcess = spawn('adb', ['root']);
+      const rootProcess = spawn('adb', ['-s', serial, 'root']);
       rootProcess.on('close', (code) => {
         if (code === 0) resolve();
         else reject(new Error('Failed to restart ADB as root'));
@@ -60,10 +83,10 @@ app.post('/start-server', async (req: Request, res: Response): Promise<any> => {
 
     // Step 2: Push Frida server binary
     await new Promise<void>((resolve, reject) => {
-      const pushProcess = spawn('adb', [
+      const pushProcess = spawn('adb', [ '-s', serial,
         'push',
-        path.join(__dirname, '..', 'frida-server-arm64'),
-        '/data/local/tmp/frida-server-arm64'
+        path.join(__dirname, '..', fridaServerBinary),
+        `/data/local/tmp/${fridaServerBinary}`
       ]);
       pushProcess.on('close', (code) => {
         if (code === 0) resolve();
@@ -73,9 +96,9 @@ app.post('/start-server', async (req: Request, res: Response): Promise<any> => {
 
     // Step 3: Set executable permissions
     await new Promise<void>((resolve, reject) => {
-      const chmodProcess = spawn('adb', [
+      const chmodProcess = spawn('adb', [ '-s', serial,
         'shell',
-        'chmod +x /data/local/tmp/frida-server-arm64'
+        `chmod +x /data/local/tmp/${fridaServerBinary}`
       ]);
       chmodProcess.on('close', (code) => {
         if (code === 0) resolve();
@@ -84,9 +107,9 @@ app.post('/start-server', async (req: Request, res: Response): Promise<any> => {
     });
 
     // Step 4: Start Frida server in detached mode
-    const serverProcess = spawn('adb', [
+    const serverProcess = spawn('adb', [ '-s', serial,
       'shell',
-      '/data/local/tmp/frida-server-arm64 -D'
+      `/data/local/tmp/${fridaServerBinary} -D`
     ], {
       detached: true,
       stdio: ['ignore', 'ignore', 'pipe'] // only capture stderr for error logging
