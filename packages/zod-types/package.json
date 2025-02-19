@@ -1,0 +1,19 @@
+{
+  "name": "@repo/zod-types",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "zod": "^3.23.8"
+  },
+  "exports": {
+    "./auth": "./src/auth.ts"
+  }
+}
