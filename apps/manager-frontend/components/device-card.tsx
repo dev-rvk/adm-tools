@@ -101,43 +101,43 @@ export default function DeviceCard({
 
     return (
         <>
-            <Card className="w-full max-w-[350px] flex flex-col justify-between">
+            <Card className="w-full max-w-[350px] flex flex-col justify-between bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 transition-colors">
                 <CardHeader className="pb-2">
                     <div className="flex justify-center mb-4">
-                        <Smartphone className="h-16 w-16 text-primary" />
+                        <Smartphone className="h-16 w-16 text-slate-700 dark:text-slate-300" />
                     </div>
-                    <CardTitle className="text-center text-2xl font-bold">
+                    <CardTitle className="text-center text-2xl font-bold text-slate-900 dark:text-slate-100">
                         {formatModelName(model)}
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
                     <div className="grid grid-cols-2 gap-2 mb-4">
-                        <div className="text-sm font-medium text-muted-foreground">
+                        <div className="text-sm font-medium text-slate-600 dark:text-slate-400">
                             Product
                         </div>
-                        <div className="text-sm text-right">{product}</div>
-                        <div className="text-sm font-medium text-muted-foreground">
+                        <div className="text-sm text-right text-slate-900 dark:text-slate-100">{product}</div>
+                        <div className="text-sm font-medium text-slate-600 dark:text-slate-400">
                             Serial
                         </div>
-                        <div className="text-sm text-right">{serial}</div>
-                        <div className="text-sm font-medium text-muted-foreground">
+                        <div className="text-sm text-right text-slate-900 dark:text-slate-100">{serial}</div>
+                        <div className="text-sm font-medium text-slate-600 dark:text-slate-400">
                             Type
                         </div>
-                        <div className="text-sm text-right">{type}</div>
-                        <div className="text-sm font-medium text-muted-foreground">
+                        <div className="text-sm text-right text-slate-900 dark:text-slate-100">{type}</div>
+                        <div className="text-sm font-medium text-slate-600 dark:text-slate-400">
                             IP Address
                         </div>
-                        <div className="text-sm text-right">{ip_address || 'N/A'}</div>
-                        <div className="text-sm font-medium text-muted-foreground">
+                        <div className="text-sm text-right text-slate-900 dark:text-slate-100">{ip_address || 'N/A'}</div>
+                        <div className="text-sm font-medium text-slate-600 dark:text-slate-400">
                             Port
                         </div>
-                        <div className="text-sm text-right">{port || 'N/A'}</div>
+                        <div className="text-sm text-right text-slate-900 dark:text-slate-100">{port || 'N/A'}</div>
                         {(type === 'emulator' || type === 'WIFI') && (
                             <>
-                                <div className="text-sm font-medium text-muted-foreground">
+                                <div className="text-sm font-medium text-slate-600 dark:text-slate-400">
                                     WS URL
                                 </div>
-                                <div className="text-sm text-right">{deviceWsUrl || 'N/A'}</div>
+                                <div className="text-sm text-right text-slate-900 dark:text-slate-100">{deviceWsUrl || 'N/A'}</div>
                             </>
                         )}
                     </div>
@@ -150,6 +150,7 @@ export default function DeviceCard({
                             onClick={handleReset}
                             disabled={isLoading}
                             title="Reset device"
+                            className="hover:bg-slate-100 dark:hover:bg-slate-800"
                         >
                             <RefreshCw className="h-4 w-4" />
                         </Button>
@@ -160,6 +161,7 @@ export default function DeviceCard({
                             <Button
                                 disabled={isLoading || deviceWsUrl !== null}
                                 onClick={handleStartServer}
+                                className="bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900"
                             >
                                 {isLoading ? "Starting..." : "Start Server"}
                             </Button>
@@ -171,6 +173,7 @@ export default function DeviceCard({
                                 ((type === 'emulator' || type === 'WIFI') && !deviceWsUrl)
                             }
                             onClick={handleConnect}
+                            className="bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900"
                         >
                             {isLoading ? "Connecting..." : "Connect"}
                         </Button>

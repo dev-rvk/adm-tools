@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Loader2, RefreshCw } from "lucide-react";
-import  DeviceCard from "../components/device-card";
-import {config} from "config";
+import DeviceCard from "../components/device-card";
+import { NavBar } from "../components/nav-bar";
+import { config } from "config";
 
 
 // import { AddDeviceForm } from '@/components/add-device-form'
@@ -31,7 +32,7 @@ export interface DeviceProps {
 export default function DeviceManagement() {
     const [devices, setDevices] = useState<DeviceProps[]>([]);
     const [loading, setLoading] = useState(false);
-    const refreshButtonRef = useRef<HTMLButtonElement>(null); // Add this line
+    const refreshButtonRef = useRef<HTMLButtonElement>(null);
 
     useEffect(() => {
         fetchDevices();
@@ -51,37 +52,37 @@ export default function DeviceManagement() {
         }
     };
 
-    
-
     return (
-        <div className="container mx-auto p-4">
-            <div className="text-center mb-10 relative">
-                <h1 className="text-2xl font-bold mb-4">Device Management</h1>
-                <button
-                    ref={refreshButtonRef}
-                    onClick={fetchDevices}
-                    className="absolute right-0 top-0 p-2 hover:bg-gray-100 rounded-full"
-                    disabled={loading}
-                >
-                    <RefreshCw
-                        className={`h-6 w-6 ${loading ? "animate-spin" : ""}`}
-                    />
-                </button>
-                <hr></hr>
-            </div>
-            {/* <AddDeviceForm onAddDevice={addDevice} /> */}
+        <div className="min-h-screen bg-background">
+            <NavBar />
+            <main className="container mx-auto p-4">
+                <div className="text-center mb-10 relative">
+                    <h1 className="text-2xl font-bold mb-4">Device Management</h1>
+                    <button
+                        ref={refreshButtonRef}
+                        onClick={fetchDevices}
+                        className="absolute right-0 top-0 p-2 hover:bg-gray-100 rounded-full"
+                        disabled={loading}
+                    >
+                        <RefreshCw
+                            className={`h-6 w-6 ${loading ? "animate-spin" : ""}`}
+                        />
+                    </button>
+                    <hr />
+                </div>
 
-            {loading && <Loader2 className="mx-auto h-8 w-8 animate-spin" />}
+                {loading && <Loader2 className="mx-auto h-8 w-8 animate-spin" />}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mx-auto">
-                {devices.map((device) => (
-                    <DeviceCard
-                        key={device.serial}
-                        {...device}
-                        refreshButtonRef={refreshButtonRef}
-                    />
-                ))}
-            </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mx-auto">
+                    {devices.map((device) => (
+                        <DeviceCard
+                            key={device.serial}
+                            {...device}
+                            refreshButtonRef={refreshButtonRef}
+                        />
+                    ))}
+                </div>
+            </main>
         </div>
     );
 }
