@@ -1,5 +1,119 @@
-# Turborepo starter with shadcn/ui, Postgres
+# Android Device Manager - Setup Guide
 
+## Prerequisites
+This guide covers the installation steps required to set up the project on **Ubuntu**, **Windows**, and **macOS**.
+
+---
+
+## Installation
+
+### Ubuntu
+Run the following commands in the terminal:
+```sh
+# Install npm
+sudo apt install npm
+
+# Install pnpm
+sudo npm install -g pnpm@latest-10
+
+# Install TypeScript compiler
+sudo npm install -g typescript
+
+# Install ADB
+sudo apt-get install android-tools-adb
+
+# Install Fastboot
+sudo apt-get install android-tools-fastboot
+```
+
+### Windows
+Run the following commands in **PowerShell (as Administrator)**:
+```powershell
+# Install npm (comes with Node.js)
+winget install OpenJS.NodeJS
+
+# Install pnpm
+npm install -g pnpm@latest-10
+
+# Install TypeScript compiler
+npm install -g typescript
+
+# Install ADB & Fastboot (via Chocolatey)
+choco install adb fastboot
+```
+If you don't have Chocolatey installed, follow the instructions at [Chocolatey Installation](https://chocolatey.org/install).
+
+### macOS
+Run the following commands in the terminal:
+```sh
+# Install npm (comes with Node.js)
+brew install node
+
+# Install pnpm
+npm install -g pnpm@latest-10
+
+# Install TypeScript compiler
+npm install -g typescript
+
+# Install ADB & Fastboot
+brew install android-platform-tools
+```
+If you don't have Homebrew installed, follow the instructions at [Homebrew Installation](https://brew.sh/).
+
+---
+
+## Clone the Repository
+```sh
+git clone https://github.com/dev-rvk/adm-emulator
+cd adm-emulator
+```
+
+## Install Dependencies
+```sh
+pnpm install
+```
+
+## Build Configuration
+Setup the `config` package and build it:
+```sh
+pmpm run config
+```
+
+## Pull Docker Images
+Ensure you have Docker installed and running, then execute:
+```sh
+## so decompiler
+docker pull devrvk/so-decompiler:latest
+
+
+## JADX decompiler
+# For x86_64 processors
+docker pull devrvk/jadx-decompile:amd64
+
+# For arm processors
+docker pull devrvk/jadx-decompile:arm64
+
+
+```
+
+
+---
+
+## Additional Notes
+- Ensure that `pnpm`, `npm`, and `node` are added to your system's PATH.
+- Verify installations using:
+  ```sh
+  node -v
+  npm -v
+  pnpm -v
+  tsc -v
+  adb version
+  fastboot --version
+  ```
+
+This completes the setup process. Happy coding!
+
+## Repo Info for developement
 
 ## Using this example
 

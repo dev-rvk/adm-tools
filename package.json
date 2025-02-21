@@ -8,7 +8,8 @@
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "ui": "pnpm --filter @repo/ui ui"
+    "ui": "pnpm --filter @repo/ui ui",
+    "config": "cd packages/config && npm run build"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
