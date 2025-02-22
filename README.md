@@ -95,7 +95,11 @@ docker pull devrvk/jadx-decompile:arm64
 
 
 ```
-
+## To run the app
+Execute the `dev` script:
+```sh
+pmpm dev
+```
 
 ---
 
