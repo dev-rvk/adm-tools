@@ -1,3 +1,5 @@
+export const IP_ADDRESS = "192.168.0.211";
+
 export const config = {
     MANAGER_BACKEND_PORT: 3001,
     MANAGER_FRONTEND_PORT: 5001,
@@ -5,11 +7,12 @@ export const config = {
     DEV_TOOLS_FRONTEND_PORT: 5002,
     TANGO_BACKEND_MANAGER_PORT: 3003,
     FRIDA_SERVER: 3004,
-    MANAGER_BACKEND_URL: "http://localhost:3001",
-    MANAGER_FRONTEND_URL: "http://localhost:5001",
-    DEV_TOOLS_BACKEND_URL: "http://localhost:3002",
-    DEV_TOOLS_FRONTEND_URL: "http://localhost:5002",
-    TANGO_BACKEND_MANAGER_URL: "http://localhost:3003",
-    FRIDA_SERVER_URL: "http://localhost:3004",
+    IP_ADDRESS: IP_ADDRESS,
+    MANAGER_BACKEND_URL: `http://${IP_ADDRESS}:3001`,
+    MANAGER_FRONTEND_URL: `http://${IP_ADDRESS}:5001`,
+    DEV_TOOLS_BACKEND_URL: `http://${IP_ADDRESS}:3002`,
+    DEV_TOOLS_FRONTEND_URL: `http://${IP_ADDRESS}:5002`,
+    TANGO_BACKEND_MANAGER_URL: `http://${IP_ADDRESS}:3003`,
+    FRIDA_SERVER_URL: `http://${IP_ADDRESS}:3004`,
 };
 

@@ -1,6 +1,6 @@
 {
-    "name": "config",
-    "version": "1.0.0",
+    "name": "@dev-rvk/adm-config",
+    "version": "1.0.2",
     "main": "dist/config.js",
     "type": "module",
     "scripts": {
