@@ -14,8 +14,9 @@ import {config} from "config";
 
 
 
-const URL = config.TANGO_BACKEND_MANAGER_URL;
-const IP = config.IP_ADDRESS;
+const PORT = config.TANGO_BACKEND_MANAGER_PORT;
+const HOST = config.HOST;
+
 // Add this helper function before the DeviceCard component
 const formatModelName = (model: string) => {
     return model.replace(/_/g, ' ');
@@ -40,7 +41,8 @@ export default function DeviceCard({
     const handleStartServer = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch(`${URL}/connect`, {
+            const response = await fetch(`http://${HOST}:${PORT}/connect`, {
+
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -58,7 +60,8 @@ export default function DeviceCard({
 
     const handleConnect = () => {
         // const baseUrl = 'https://dev-rvk.github.io/adm-emulator/';
-        const baseUrl = `http://${IP}:5051/`
+        const baseUrl = `http://${HOST}:5051/`
+
         const params = new URLSearchParams({
             type: type,
             wsUrl: deviceWsUrl || '',
@@ -78,7 +81,8 @@ export default function DeviceCard({
     const handleReset = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch(`${URL}/reset`, {
+            const response = await fetch(`http://${HOST}:${PORT}/reset`, {
+
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
