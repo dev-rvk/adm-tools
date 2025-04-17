@@ -68,15 +68,15 @@ git clone https://github.com/dev-rvk/adm-emulator
 cd adm-emulator
 ```
 
-## Install Dependencies
-```sh
-pnpm install
-```
-
 ## Build Configuration
 Setup the `config` package and build it:
 ```sh
 pmpm run config
+```
+
+## Install Dependencies
+```sh
+pnpm install
 ```
 
 ## Pull Docker Images
@@ -101,6 +101,12 @@ Execute the `dev` script:
 pmpm dev
 ```
 
+## Ensure the following URLS are treated secure (in chromium based browesers)
+URL: chrome://flags/#unsafely-treat-insecure-origin-as-secure
+Replace with the correct IP, keep Ports the same
+```
+http://192.168.1.142:3001,ws://192.168.1.142:3001,http://192.168.1.142:5051,http://192.168.1.142:3002
+```
 ---
 
 ## Additional Notes
