@@ -4,7 +4,7 @@
     "main": "server.js",
     "type": "module",
     "scripts": {
-        "dev": "npx tsc && node dist/server.js",
+        "dev": "npx tsc && node dist/server.js --host",
         "build": "npx tsc",
         "server": "node dist/server.js",
         "test": "echo \"Error: no test specified\" && exit 1"
