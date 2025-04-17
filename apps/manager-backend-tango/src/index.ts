@@ -15,6 +15,7 @@ app.use(cors({
 app.use(express.json());
 
 const port = config.TANGO_BACKEND_MANAGER_PORT;
+const server = new HttpServer(app);
 
 const HOST = config.HOST;
 
