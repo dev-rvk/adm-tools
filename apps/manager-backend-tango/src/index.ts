@@ -15,9 +15,8 @@ app.use(cors({
 app.use(express.json());
 
 const port = config.TANGO_BACKEND_MANAGER_PORT;
-const HOST = config.HOST;
 
-const server = new HttpServer(app);
+const HOST = config.HOST;
 
 type WebsockifyServer = {
     server: import('http').Server;
@@ -80,6 +79,7 @@ app.get('/devices', async (req, res) => {
                 maxPayloadSize: transport.maxPayloadSize,
                 banner: bannerString,
                 wsUrl: `ws://${HOST}:${port}/device/${device.transportId}?serial=${device.serial}&maxPayload=${transport.maxPayloadSize}&banner=${encodeURIComponent(bannerString)}&service=${encodeURIComponent('')}`
+
             };
         }));
         res.json(deviceInfo);
@@ -154,6 +154,7 @@ app.get('/list', async (req, res) => {
             ].join(';')}`;
 
             const wsUrl = `ws://${HOST}:${port}/device/${device.transportId}?serial=${device.serial}&maxPayload=${transport.maxPayloadSize}&banner=${encodeURIComponent(bannerString)}&service=${encodeURIComponent('')}`;
+
                 
             const deviceInfo: DeviceInfo = {
                 ...baseDeviceInfo,
@@ -227,6 +228,7 @@ app.post('/connect', async (req, res) : Promise<any>=> {
     if (emulatorMatch) {
         devicePort = String(Number(emulatorMatch[1]) + 1);
         deviceIP = `localhost`;
+
     } else {
         devicePort = wifiMatch![2];
         deviceIP = wifiMatch![1];
@@ -243,6 +245,7 @@ app.post('/connect', async (req, res) : Promise<any>=> {
         });
 
         const wsUrl = `ws://${HOST}:${wsPort}`;
+
         activeWebsockifyServers.set(serial, { server, wsUrl });
 
         res.json({
@@ -478,4 +481,5 @@ app.post('/reset', async (req, res): Promise<any> => {
 
 server.listen(port, () => {
     console.log(`Server listening at http://${HOST}:${port}`);
+
 });

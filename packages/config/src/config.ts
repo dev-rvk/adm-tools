@@ -9,6 +9,7 @@ if (!IP_ADDRESS) {
     HOST = IP_ADDRESS
 }
 
+
 export const config = {
     MANAGER_BACKEND_PORT: 3001,
     MANAGER_FRONTEND_PORT: 5001,
@@ -23,5 +24,6 @@ export const config = {
     DEV_TOOLS_FRONTEND_URL: `http://${HOST}:5002`,
     TANGO_BACKEND_MANAGER_URL: `http://${HOST}:3003`,
     FRIDA_SERVER_URL: `http://${HOST}:3004`,
+
 };
 

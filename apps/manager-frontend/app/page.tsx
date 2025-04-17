@@ -9,10 +9,12 @@ import { config } from "config";
 
 // import { AddDeviceForm } from '@/components/add-device-form'
 
+
 const PORT = config.TANGO_BACKEND_MANAGER_PORT;
 const HOST = config.HOST;
 // Update this with your actual backend URL
 const BACKEND_URL = `http://${HOST}:${PORT}`;
+
 // Local app url
 // const ADM_BASE = 'http://localhost:5050'
 // const ADM_BASE_GITHUB = "https://dev-rvk.github.io/adm-emulator";
