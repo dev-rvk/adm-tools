@@ -73,18 +73,31 @@ export default function DeviceManagement() {
                     </button>
                     <hr />
                 </div>
-
                 {loading && <Loader2 className="mx-auto h-8 w-8 animate-spin" />}
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mx-auto">
-                    {devices.map((device) => (
-                        <DeviceCard
-                            key={device.serial}
-                            {...device}
-                            refreshButtonRef={refreshButtonRef}
-                        />
-                    ))}
-                </div>
+                {!Array.isArray(devices) || devices.length === 0 ? (
+                    <div className="flex items-center justify-center h-[60vh]">
+                        <div className="flex items-center space-x-4 bg-red-100 border border-red-400 text-red-700 px-8 py-4 rounded-lg shadow-md max-w-3xl">
+                            <p className="text-lg font-semibold">
+                                Unable to fetch devices.
+                            </p>
+                            <p className="text-sm">
+                                Please ensure the Google ADB server is running and the device is connected to the server.
+                            </p>
+                            <Loader2 className="h-6 w-6 animate-spin text-red-500" />
+                        </div>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mx-auto">
+                        {devices.map((device) => (
+                            <DeviceCard
+                                key={device.serial}
+                                {...device}
+                                refreshButtonRef={refreshButtonRef}
+                            />
+                        ))}
+                    </div>
+                )}
             </main>
         </div>
     );

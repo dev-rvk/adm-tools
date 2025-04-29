@@ -68,7 +68,7 @@ git clone https://github.com/dev-rvk/adm-emulator
 cd adm-emulator
 ```
 
-## Build Configuration
+## Build Configuration (Not needed anymore SKIP)
 Setup the `config` package and build it:
 ```sh
 pmpm run config
