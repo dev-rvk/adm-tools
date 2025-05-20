@@ -92,9 +92,31 @@ app.get('/devices', async (req, res) => {
 
 const deviceRegistry = new Map<string, DeviceInfo>();
 
-app.get('/list', async (req, res) => {
+app.get('/list', async (req, res) : Promise<any> => {
     try {
-        const devices = await listDevices();
+        // Try to use the existing client first, but create a new one if needed
+        let adbClient = client;
+        let devices;
+        
+        try {
+            // Try to get devices with existing client
+            devices = await adbClient.getDevices();
+        } catch (error) {
+            console.log('Error with existing ADB client, attempting to create a new connection...');
+            // Create a new connector and client if the existing one fails
+            const newConnector = new AdbServerNodeTcpConnector({ port: 5037 });
+            adbClient = new AdbServerClient(newConnector);
+            
+            try {
+                devices = await adbClient.getDevices();
+            } catch (reconnectError) {
+                console.error('Failed to connect to ADB server after retry:', reconnectError);
+                return res.status(500).json({ 
+                    error: 'Failed to connect to ADB server. Make sure ADB is running with "adb start-server"'
+                });
+            }
+        }
+        
         const deviceInfoList: DeviceInfo[] = await Promise.all(devices.map(async device => {
             const wsServer = activeWebsockifyServers.get(device.serial);
 
@@ -139,7 +161,7 @@ app.get('/list', async (req, res) => {
             }
 
             // Default to USB device
-            const transport = await client.createTransport(device);
+            const transport = await adbClient.createTransport(device);
             const banner = new AdbBanner(
                 device.product,
                 device.model,
@@ -195,7 +217,7 @@ app.get('/list', async (req, res) => {
     }
 });
 
-app.post('/connect', async (req, res) : Promise<any>=> {
+app.post('/connect', async (req, res) : Promise<any> => {
     
     console.log(req.body)
     const { serial } = req.body;

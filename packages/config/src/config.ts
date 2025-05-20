@@ -1,4 +1,4 @@
-export const IP_ADDRESS = '192.168.0.200';
+export const IP_ADDRESS = '';
 
 let HOST: string;
 
